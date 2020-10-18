@@ -1,10 +1,9 @@
-let lado = [false,false];
 let Jogador1
 let Jogador2
 let Score1
 let Score2
 let bola
-let velo = [5,1]
+let velo = [5,1,1,-1]
 let pontos = [0,0]
 function startGame() {
     myGameArea.start();
@@ -33,35 +32,35 @@ var myGameArea = {
             bola.x = 330
             pontos[0] += 1;
             velo[1] = 1
+            velo[3] = -1
         }else if(bola.x<=0){
             bola.x = 330
             pontos[1] += 1;
             velo[1] = 1
+            velo[3] =-1
+        }
+    },
+    crashWith : function() {
+        if((bola.y+bola.height)>this.canvas.height||bola.y<0){
+            if(velo[2]<=10){
+                velo[2] *= -1
+            }
         }
     }
 }
 function moveBola(){
-    if(Jogador1.crashWith(bola)){
-        lado[0] = true
+    if(Jogador1.crashWith(bola)||Jogador2.crashWith(bola)){
         if(velo[1]<=10){
-            velo[1] += 0.1
-        }
-    }else if(Jogador2.crashWith(bola)){
-        lado[0] = false
-        if(velo[1]<=10){
-            velo[1] += 0.5
+            velo[1] *= velo[3]
+            velo[3] -= .1
         }
     }
-    if(Jogador1.crashMeio(bola)){
-        let oi
-    }
-    if(lado[0]){
         bola.x += velo[1]
-    }else{
-        bola.x -= velo[1]
-    }
+        bola.y += velo[2]
+        console.log("Velocidade x bola:"+bola.x+" Velocidade y da bola:"+bola.y+" Velocidade x:" +velo[1]+" Velocidade y:"+velo[2]+" Velocidado Global:"+velo[3])
 }
 function updateGameArea() {
+    myGameArea.crashWith()
     moveBola()
     myGameArea.fim();
     myGameArea.clear();
@@ -102,22 +101,6 @@ function component(width, height, color, x, y, type) {
         var otherbottom = otherobj.y + (otherobj.height);
         var crash = true;
         if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
-            crash = false;
-        }
-        return crash;
-    }
-    this.crashMeio = function(otherobj){
-        var myleft = this.x;
-        var myright = this.x + (this.width);
-        var mytop = this.y;
-        var mybottom = this.y + (this.height);
-        var otherleft = otherobj.x;
-        var otherright = otherobj.x + (otherobj.width);
-        var othertop = otherobj.y;
-        var otherbottom = (otherobj.y + (otherobj.height));
-        var crash = true;
-        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
-            alert(otherbottom+"."+otherbottom/2)
             crash = false;
         }
         return crash;
